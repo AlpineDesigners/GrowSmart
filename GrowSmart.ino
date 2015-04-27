@@ -105,7 +105,7 @@
 //#define DHTTYPE              DHT21   // DHT 21 (AM2301)
 //#define DHTTYPE              DHT11   // DHT 11 
 DHT inner_dht(INNER_AIR_PROBE_PIN, DHTTYPE);
-//DHT outer_dht(OUTER_AIR_PROBE_PIN, DHTTYPE);
+DHT outer_dht(OUTER_AIR_PROBE_PIN, DHTTYPE);
 
 // state which clock we are using
 RTC_DS1307 RTC;      // inexpensive indoor clock
@@ -147,7 +147,8 @@ char project_title[40] = "GrowSmart";
 char project_title_default[40] = "GrowSmart";
 char day_start_title[20];
 char night_start_title[20];
-char time_string[30];
+char time_string[20];
+char air_string[20];
 
 int day;
 int month;
@@ -219,14 +220,18 @@ soil_humidity;
 
 void setup() {
   
+  // setup serial debugging
+  Serial.begin( 96000 );
+  Serial.println("BioBox Serial Defined:\n");
+
   // PIN USAGE
   // INPUT Probe Pins
   pinMode( A0 , INPUT );    // A0
   pinMode( A1 , INPUT );    // A1
   pinMode( A2 , INPUT );    // A2
-  pinMode( A3 , INPUT );    // A3
-  pinMode( A4 , INPUT );    // A4
-  pinMode( A5 , INPUT );    // A5
+  pinMode( A3 , INPUT_PULLUP );    // A3
+  pinMode( A4 , INPUT_PULLUP );    // A4
+  pinMode( A5 , INPUT_PULLUP );    // A5
   /*  RESERVED PINS for other uses
   pinMode(  0 , ????? );    //  0  --  RX
   pinMode(  1 , ????? );    //  1  --  TX
@@ -264,10 +269,6 @@ void setup() {
     // following line sets the RTC to the date & time this sketch was compiled
     RTC.adjust(DateTime(__DATE__, __TIME__));
   }
-
-  // setup serial debugging
-  Serial.begin( 96000 );
-  Serial.println("BioBox Serial Defined:\n");
   delay(wait_delay);  
   
   // setup the lcd pannel
@@ -307,29 +308,49 @@ void config_lcd() {
 }
 
 void lcd_display() {
-  // keep backlight on for x seconds after trigger
+  static   print_str[20];
+  static   unsigned long interval = 10000;
+  static   unsigned long previousMillis;        // will store last time LED was updated
+  unsigned long currentMillis = millis();
   if ( digitalRead( PROXIMITY_PROBE_PIN ) ) {
     Serial.println( "someone nearby" );
+   // save the last time you saw a person the LED 
+    previousMillis = currentMillis;   
     lcd.backlight();
-  } else {
+  }
+  if (currentMillis - previousMillis >= interval) {
     Serial.println( "no one nearby" );
     lcd.noBacklight();
-    //lcd.clear();
   }
-  lcd.backlight();
-  lcd.clear();
+  //lcd.backlight();
+  //lcd.clear();
   DateTime now = RTC.now();
   lcd.setCursor(5,0); //Start at character 8 on line 0
   lcd.print( project_title );
-  lcd.setCursor(3,1);
-  lcd.print("Class Edition");
-  lcd.setCursor(0, 2);
+  lcd.setCursor(2, 1);
+  //lcd.print("Class Edition");
   lcd.print( "Brightness: " );
-  lcd.print( map( analogRead( LIGHT_PROBE_PIN ), 0, 1023, 0, 100) );
+  lcd.print( map( analogRead( LIGHT_PROBE_PIN ), 0, 1023, 0, 99) );
   lcd.print( " %");
-  sprintf( time_string, "%d-%d-%d  %02d:%02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second() );
+  lcd.setCursor(0,2);
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  lcd.write("In  T=");
+  lcd.print( inner_dht.readTemperature(),1 );
+  lcd.write("c H=");
+  lcd.print( inner_dht.readHumidity(),1 );
+  lcd.write("%");
+  //sprintf( print_str, "In  T=02%fc H=02%f\%", now.year(), now.month(), now.day(), now.hour(), now.minute() );
   lcd.setCursor(0,3);
-  lcd.print( time_string );
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  lcd.write("Out T=");
+  lcd.print( outer_dht.readTemperature(),1 );
+  lcd.write("c H=");
+  lcd.print( outer_dht.readHumidity(),1 );
+  lcd.write("%");
+  //sprintf( time_string, "%04d-%02d-%02d %02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute() );
+  //lcd.print( time_string );
   Serial.println( "LCD - refresh" );
 }
 
