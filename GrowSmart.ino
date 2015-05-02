@@ -17,6 +17,13 @@
 // https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads
 #include <LiquidCrystal_I2C.h>
 
+// easier use for no / nc relays
+//#define RELAY_ON              LOW;
+//#define RELAY_OFF             HIGH;
+
+int RELAY_ON = LOW;
+int RELAY_OFF = HIGH;
+
 // PIN USAGE
 #define LIGHT_PROBE_PIN       A0
 #define INNER_AIR_PROBE_PIN   A1  // lab temp and humidity probe pin
@@ -25,8 +32,7 @@
 //#define SOIL_MOIST_PROBE_PIN  A3  // humidity or (temp and humidity with DHT22 probe)
 //#define SOIL_TEMP_PROBE_PIN   A4  // temp soil probe with 10K thermistor
 #define PROXIMITY_PROBE_PIN   A5  // know when to make displays visible when a person is nearby
-#define AQUA_STOP_PROBE_PIN   A6
-//#define AQUA_STOP_PROBE_0_PIN A6
+#define AQUA_STOP_PROBE_0_PIN A6
 //#define AQUA_STOP_PROBE_1_PIN A7
 #define PIN_A8                A8
 #define PIN_A9                A9
@@ -34,18 +40,20 @@
 #define PIN_A11               A11
 #define PIN_A12               A12
 #define PIN_A13               A13
-#define PIN_A14               A14
+#define WATER_TEMP_PIN        A14
 #define AMPERAGE_PROBE_PIN    A15  // current usage probe
 
 // shield reserved pins -- DO NOT CHANGE USAGE
 #define SERIAL_RX_PIN         0  // reserved by Serial
 #define SERIAL_TX_PIN         1  // reserved by Serial
-//#define INTERRUPT_0           2  // PWM & Interrupt 0
-//#define INTERRUPT_1           3  // PWM & Interrupt 1
+#define INTERRUPT_0           2  // PWM & Interrupt 0
+#define INTERRUPT_1           3  // PWM & Interrupt 1
+/*
 #define FAN_DIRECTION_PIN     4  // PWM  - reserved by MOTOR shield & romeo
 #define FAN_SPEED_PIN         5  // PWM - reserved by MOTOR shield & romeo
 #define PUMP_SPEED_PIN        6  // PWM - reserved by MOTOR shield & romeo
 #define PUMP_DIRECTION_PIN    7  // PWM - reserved by MOTOR shield & romeo
+*/
 #define ANDEE_SHIELD_PIN      8  // PWM  - reserved by ANDEE shield
 // ClimeCase output pins
 #define AIR_TEMP_CTRL_PIN     9  // PWM - for air heating intensity control
@@ -104,8 +112,8 @@
 #define DHTTYPE              DHT22   // DHT 22  (AM2302)
 //#define DHTTYPE              DHT21   // DHT 21 (AM2301)
 //#define DHTTYPE              DHT11   // DHT 11 
-DHT inner_dht(INNER_AIR_PROBE_PIN, DHTTYPE);
-DHT outer_dht(OUTER_AIR_PROBE_PIN, DHTTYPE);
+DHT inner_dht( INNER_AIR_PROBE_PIN, DHTTYPE );
+DHT outer_dht( OUTER_AIR_PROBE_PIN, DHTTYPE );
 
 // state which clock we are using
 RTC_DS1307 RTC;      // inexpensive indoor clock
@@ -121,8 +129,8 @@ Servo window;
 
 // define inputs for sliders
 AndeeHelper titleSetting;
-AndeeHelper lampSetting;
-AndeeHelper lowLightSetting;
+AndeeHelper lampBrigthSetting;
+AndeeHelper sunnyDaySetting;
 AndeeHelper dayStartSetting;
 AndeeHelper nightStartSetting;
 AndeeHelper minAirHumiditySetting;
@@ -142,7 +150,7 @@ AndeeHelper buttonResetPosition;
 char newBluetoothName[] = "GrowSmart"; // New device name
 char cmdReply[64]; // String buffer
 char commandString[100]; // String to store the new device name and device command into one
-char user_title_in[32];
+char user_title_set[32];
 char project_title[40] = "GrowSmart";
 char project_title_default[40] = "GrowSmart";
 char day_start_title[20];
@@ -157,17 +165,17 @@ int ios_hour;
 int ios_minute;
 int ios_second;
 
-int   ss_in                     = 0;
+int   ss_set                     = 0;
 int   ss_default                = 0;
-int   lamp_in                   = 100;
+int   lamp_bright_set                   = 100;
 int   lamp_default              = 100;
-int   low_light_default         = 75;
-float day_start_default         = 6.5;
-int   day_start_hh_default      = 06;
-int   day_start_mm_default      = 30;
-float night_start_default       = 19.0;
-int   night_start_hh_default    = 19;
-int   night_start_mm_default    = 30;
+int   sunny_day_default         = 95;
+float day_start_default         = 5.0;
+int   day_start_hh_default      = 05;
+int   day_start_mm_default      = 00;
+float night_start_default       = 22.0;
+int   night_start_hh_default    = 22;
+int   night_start_mm_default    = 00;
 
 int   min_air_humidity_default  = 50;
 int   max_air_humidity_default  = 75;
@@ -183,26 +191,26 @@ float fan_run_min_default       = 5.0;
 float fan_off_min_default       = 10.0;
 int   resevoir_alert_default    = 20;
 
-int   low_light_in;
-float day_start_in;
-int   day_start_hh_in;
-int   day_start_mm_in;
-int   day_start_ss_in;
-float night_start_in;
-int   night_start_hh_in;
-int   night_start_mm_in;
-int   night_start_ss_in;
-int   min_air_humidity_in;
-int   max_air_humidity_in;
-float day_air_temp_in;
-float night_air_temp_in;
-int   min_soil_moisture_in;
-int   max_soil_moisture_in;
-float soil_temp_in;
-float night_soil_temp_in;
-float fan_run_min_in;
-float fan_off_min_in;
-int   resevoir_alert_in;
+int   sunny_day_set;
+float day_start_set;
+int   day_start_hh_set;
+int   day_start_mm_set;
+int   day_start_ss_set;
+float night_start_set;
+int   night_start_hh_set;
+int   night_start_mm_set;
+int   night_start_ss_set;
+int   min_air_humidity_set;
+int   max_air_humidity_set;
+float day_air_temp_set;
+float night_air_temp_set;
+int   min_soil_moisture_set;
+int   max_soil_moisture_set;
+float soil_temp_set;
+float night_soil_temp_set;
+float fan_run_min_set;
+float fan_off_min_set;
+int   resevoir_alert_set;
 
 int wait_delay = 4000;
 

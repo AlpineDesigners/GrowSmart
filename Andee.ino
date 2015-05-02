@@ -1,6 +1,7 @@
 // This is the function meant to define the types and the apperance of
 // all the objects on your smartphone
 void setInitialAndeeData() {  
+  
   // Set Project Title
   titleSetting.setId(0);
   titleSetting.setType(KEYBOARD_IN); // Sets object as a text input button
@@ -9,24 +10,25 @@ void setInitialAndeeData() {
   titleSetting.setKeyboardType(ALPHA_NUMERIC); 
   
   // LAMP Setting
-  lampSetting.setId(10);
-  lampSetting.setType(SLIDER_IN);
-  lampSetting.setLocation(1,0,ONE_QUART);
-  lampSetting.setTitle("Lamp Brightness");
-  lampSetting.setSliderMinMax(0, 100, 0); // Display 2 decimal places
-  lampSetting.setSliderInitialValue( lamp_default );  // Set slider position to 50
-  lampSetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
-  lampSetting.setSliderReportMode(ON_VALUE_CHANGE);
+  lampBrigthSetting.setId(10);
+  lampBrigthSetting.setType(SLIDER_IN);
+  lampBrigthSetting.setLocation(1,0,ONE_QUART);
+  lampBrigthSetting.setTitle("Lamp Brightness");
+  lampBrigthSetting.setSliderMinMax(0, 100, 0); // Display 2 decimal places
+  lampBrigthSetting.setSliderInitialValue( lamp_default ); 
+  lampBrigthSetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
+  lampBrigthSetting.setSliderReportMode(ON_VALUE_CHANGE);
 
   // LIGHT Settings
-  lowLightSetting.setId(11);
-  lowLightSetting.setType(SLIDER_IN);
-  lowLightSetting.setLocation(1,1,ONE_QUART);
-  lowLightSetting.setTitle("Lamp Trigger");
-  lowLightSetting.setSliderMinMax(0, 100, 0); // Display 2 decimal places
-  lowLightSetting.setSliderInitialValue( low_light_default );  // Set slider position to 50
-  lowLightSetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
-  lowLightSetting.setSliderReportMode(ON_VALUE_CHANGE);
+  sunnyDaySetting.setId(11);
+  sunnyDaySetting.setType(SLIDER_IN);
+  sunnyDaySetting.setLocation(1,1,ONE_QUART);
+  sunnyDaySetting.setTitle( "Sunny Value" );
+  sunnyDaySetting.setSliderMinMax(0, 100, 0); // Display 2 decimal places
+  sunnyDaySetting.setSliderInitialValue( sunny_day_default );  // Set slider position to 50
+  sunnyDaySetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
+  sunnyDaySetting.setSliderReportMode(ON_VALUE_CHANGE);
+  
   //Daylight Start
   dayStartSetting.setId(12);
   dayStartSetting.setType(TIME_IN); // Sets object as a time input button
@@ -35,6 +37,7 @@ void setInitialAndeeData() {
   dayStartSetting.setTitle( day_start_title );
   // Optional Setting. When the user opens up the time picker,
   dayStartSetting.setDefaultTime(day_start_hh_default, day_start_mm_default, ss_default); // Format: hour, minute, second
+
   //Daylight End
   nightStartSetting.setId(13);
   nightStartSetting.setType(TIME_IN); // Sets object as a time input button
@@ -53,6 +56,7 @@ void setInitialAndeeData() {
   minAirHumiditySetting.setSliderInitialValue( min_air_humidity_default );
   minAirHumiditySetting.setSliderNumIntervals(100);
   minAirHumiditySetting.setSliderReportMode(ON_VALUE_CHANGE);
+
   // Let's draw a continuous slider! ///////////////////////////////////////
   maxAirHumiditySetting.setId(21);
   maxAirHumiditySetting.setType(SLIDER_IN);
@@ -62,6 +66,7 @@ void setInitialAndeeData() {
   maxAirHumiditySetting.setSliderInitialValue( max_air_humidity_default );  // Set slider position to 50
   maxAirHumiditySetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
   maxAirHumiditySetting.setSliderReportMode(ON_VALUE_CHANGE);
+ 
   //Day Air Temp
   dayAirTempSetting.setId(22);
   dayAirTempSetting.setType(SLIDER_IN);
@@ -71,6 +76,7 @@ void setInitialAndeeData() {
   dayAirTempSetting.setSliderInitialValue( day_air_temp_default );  // Set slider position to 50
   dayAirTempSetting.setSliderNumIntervals(0); // Set to 0 for continuous slider
   dayAirTempSetting.setSliderReportMode(ON_VALUE_CHANGE);
+
   //Night Air Temp
   nightAirTempSetting.setId(23);
   nightAirTempSetting.setType(SLIDER_IN);
@@ -92,6 +98,7 @@ void setInitialAndeeData() {
   minSoilMoistureSetting.setSliderReportMode(ON_VALUE_CHANGE);
   minSoilMoistureSetting.setSliderColor(THEME_GREY_DARK); // Slider bar colour
   minSoilMoistureSetting.setColor(THEME_GREY); // Slider background colour
+
   // Let's draw a continuous slider! ///////////////////////////////////////
   maxSoilMoistureSetting.setId(2);
   maxSoilMoistureSetting.setType(SLIDER_IN);
@@ -103,6 +110,7 @@ void setInitialAndeeData() {
   maxSoilMoistureSetting.setSliderReportMode(ON_FINGER_UP);
   maxSoilMoistureSetting.setSliderColor(THEME_MIDNIGHT_DARK);
   maxSoilMoistureSetting.setColor(THEME_MIDNIGHT);
+
   //Day Soil Temp
   SoilTempSetting.setId(3);
   SoilTempSetting.setType(SLIDER_IN);
@@ -122,6 +130,7 @@ void setInitialAndeeData() {
   fanRunMinSetting.setSliderInitialValue( fan_run_min_default );  // Set slider position to 50
   fanRunMinSetting.setSliderNumIntervals(0); // Set to 0 for continuous slider
   fanRunMinSetting.setSliderReportMode(ON_VALUE_CHANGE); 
+
   // Fan off (min)
   fanOffMinSetting.setId(31);
   fanOffMinSetting.setType(SLIDER_IN);
@@ -152,12 +161,13 @@ void setInitialAndeeData() {
   
 }    // END of andee setup
 
+
 void andee_update() {
 
   if( buttonResetPosition.isPressed() ) {
     buttonResetPosition.ack();
     titleSetting.setTitle( project_title_default );
-    lowLightSetting.moveSliderToValue(low_light_default);
+    sunnyDaySetting.moveSliderToValue(sunny_day_default);
     //dayStartSetting.moveSliderToValue( day_start_default );
     sprintf( day_start_title, "Day Start: %02d:%02d", day_start_hh_default, day_start_mm_default);
     dayStartSetting.setTitle( day_start_title );
@@ -167,7 +177,7 @@ void andee_update() {
     dayStartSetting.setTitle( day_start_title );
     dayStartSetting.setDefaultTime(night_start_hh_default, night_start_mm_default, ss_default); // Format: hour, minute, secon
     //
-    lampSetting.moveSliderToValue( lamp_default );
+    lampBrigthSetting.moveSliderToValue( lamp_default );
     minAirHumiditySetting.moveSliderToValue( min_air_humidity_default );
     maxAirHumiditySetting.moveSliderToValue( max_air_humidity_default );
     dayAirTempSetting.moveSliderToValue( day_air_temp_default );
@@ -182,12 +192,12 @@ void andee_update() {
   } 
   
   if ( titleSetting.isPressed() ) {
-    memset( user_title_in, 0x00, 32 ); // Empty the contents of the string before receiving user input
+    memset( user_title_set, 0x00, 32 ); // Empty the contents of the string before receiving user input
     titleSetting.ack(); // Acknowledge button press or else phone will be left waiting
-    titleSetting.getKeyboardMessage( user_title_in ); // Display keyboard and store input into userInput
-    sprintf( project_title, "%s", user_title_in );
+    titleSetting.getKeyboardMessage( user_title_set ); // Display keyboard and store input into userInput
+    sprintf( project_title, "%s", user_title_set );
     titleSetting.setTitle( project_title );   
-    sprintf(commandString, "SET BT NAME %s", user_title_in );
+    sprintf(commandString, "SET BT NAME %s", user_title_set );
     Andee.sendCommand( commandString, cmdReply );
   }
   titleSetting.update();
@@ -195,45 +205,45 @@ void andee_update() {
   if( dayStartSetting.isPressed() ) { 
     dayStartSetting.ack();
     // Display time picker and store it in the three variables - hh, mm, and ss
-    dayStartSetting.getTimeInput(&day_start_hh_in, &day_start_mm_in, &ss_in); 
+    dayStartSetting.getTimeInput(&day_start_hh_set, &day_start_mm_set, &ss_set); 
     // String the three variables into a single time string
-    sprintf(day_start_title, "Day Start: %02d:%02d", day_start_hh_in, day_start_mm_in);
+    sprintf(day_start_title, "Day Start: %02d:%02d", day_start_hh_set, day_start_mm_set);
     dayStartSetting.setTitle( day_start_title );
     // Optional Setting. When the user opens up the time picker,
-    dayStartSetting.setDefaultTime(day_start_hh_in, day_start_mm_in, ss_default); // Format: hour, minute, second
+    dayStartSetting.setDefaultTime(day_start_hh_set, day_start_mm_set, ss_default); // Format: hour, minute, second
   }
   dayStartSetting.update();
   
   if( nightStartSetting.isPressed() ) { 
     nightStartSetting.ack();
     // Display time picker and store it in the three variables - hh, mm, and ss
-    nightStartSetting.getTimeInput(&night_start_hh_in, &night_start_mm_in, &ss_in); 
+    nightStartSetting.getTimeInput(&night_start_hh_set, &night_start_mm_set, &ss_set); 
     // String the three variables into a single time string
-    sprintf( night_start_title, "Night Start: %02d:%02d", night_start_hh_in, night_start_mm_in);
+    sprintf( night_start_title, "Night Start: %02d:%02d", night_start_hh_set, night_start_mm_set);
     nightStartSetting.setTitle( night_start_title );
     // Optional Setting. When the user opens up the time picker,
-    nightStartSetting.setDefaultTime(night_start_hh_in, night_start_mm_in, ss_default); // Format: hour, minute, second
+    nightStartSetting.setDefaultTime(night_start_hh_set, night_start_mm_set, ss_default); // Format: hour, minute, second
   }
   nightStartSetting.update();
   
-  lamp_in               = lampSetting.getSliderValue( INT );
-  low_light_in          = lowLightSetting.getSliderValue( INT );
-  day_start_in          = dayStartSetting.getSliderValue( FLOAT );
-  night_start_in        = nightStartSetting.getSliderValue( FLOAT );
-  min_air_humidity_in   = minAirHumiditySetting.getSliderValue( INT ); // Retrieve integer value
-  max_air_humidity_in   = maxAirHumiditySetting.getSliderValue( INT ); // Retrieve float value
-  day_air_temp_in       = dayAirTempSetting.getSliderValue( FLOAT );
-  night_air_temp_in     = nightAirTempSetting.getSliderValue( FLOAT );
-  min_soil_moisture_in  = minSoilMoistureSetting.getSliderValue( INT ); // Retrieve integer value
-  max_soil_moisture_in  = maxSoilMoistureSetting.getSliderValue( INT ); // Retrieve float value
-  soil_temp_in          = SoilTempSetting.getSliderValue( FLOAT );
-  night_soil_temp_in    = nightSoilTempSetting.getSliderValue( FLOAT );
-  fan_run_min_in        = fanRunMinSetting.getSliderValue( FLOAT );
-  fan_off_min_in        = fanOffMinSetting.getSliderValue( FLOAT );
-  resevoir_alert_in     = resevoirAlertSetting.getSliderValue( INT );
+  lamp_bright_set        = lampBrigthSetting.getSliderValue( INT );
+  sunny_day_set          = sunnyDaySetting.getSliderValue( INT );
+  day_start_set          = dayStartSetting.getSliderValue( FLOAT );
+  night_start_set        = nightStartSetting.getSliderValue( FLOAT );
+  min_air_humidity_set   = minAirHumiditySetting.getSliderValue( INT ); // Retrieve integer value
+  max_air_humidity_set   = maxAirHumiditySetting.getSliderValue( INT ); // Retrieve float value
+  day_air_temp_set       = dayAirTempSetting.getSliderValue( FLOAT );
+  night_air_temp_set     = nightAirTempSetting.getSliderValue( FLOAT );
+  min_soil_moisture_set  = minSoilMoistureSetting.getSliderValue( INT ); // Retrieve integer value
+  max_soil_moisture_set  = maxSoilMoistureSetting.getSliderValue( INT ); // Retrieve float value
+  soil_temp_set          = SoilTempSetting.getSliderValue( FLOAT );
+  night_soil_temp_set    = nightSoilTempSetting.getSliderValue( FLOAT );
+  fan_run_min_set        = fanRunMinSetting.getSliderValue( FLOAT );
+  fan_off_min_set        = fanOffMinSetting.getSliderValue( FLOAT );
+  resevoir_alert_set     = resevoirAlertSetting.getSliderValue( INT );
   
-  lampSetting.update();
-  lowLightSetting.update();
+  lampBrigthSetting.update();
+  sunnyDaySetting.update();
   dayStartSetting.update();
   nightStartSetting.update();
   minAirHumiditySetting.update();
