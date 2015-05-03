@@ -21,8 +21,8 @@
 //#define RELAY_ON              LOW;
 //#define RELAY_OFF             HIGH;
 
-int RELAY_ON = LOW;
-int RELAY_OFF = HIGH;
+int RELAY_ON  = HIGH;
+int RELAY_OFF = LOW;
 
 // PIN USAGE
 #define LIGHT_PROBE_PIN       A0
@@ -72,7 +72,7 @@ int RELAY_OFF = HIGH;
 #define I2C_TWI_SDA_PIN      20  // SDA & interrupt 3
 #define I2C_TWI_SCL_PIN      21  // SCL & interrupt 2
 #define AQUA_PUMP_CTRL_PIN   22  
-#define PIN_23               23  
+//#define LAMP_CTRL_PIN_0      23  
 #define PIN_24               24  
 #define PIN_25               25
 #define PIN_26               26
@@ -165,17 +165,19 @@ int ios_hour;
 int ios_minute;
 int ios_second;
 
-int   ss_set                     = 0;
+int   ss_set                    = 0;
 int   ss_default                = 0;
-int   lamp_bright_set                   = 100;
-int   lamp_default              = 100;
+int   lamp_bright_set           = 100;
+int   lamp_bright_default       = 100;
 int   sunny_day_default         = 95;
-float day_start_default         = 5.0;
 int   day_start_hh_default      = 05;
-int   day_start_mm_default      = 00;
-float night_start_default       = 22.0;
-int   night_start_hh_default    = 22;
-int   night_start_mm_default    = 00;
+int   day_start_mm_default      = 15;
+int   day_start_ss_default      = 00;
+//long  day_start_default         = (long)day_start_hh_default * 10000 + (long)day_start_mm_default * 100;
+int   night_start_hh_default    = 21;
+int   night_start_mm_default    = 45;
+int   night_start_ss_default    = 00;
+//float  night_start_default       = (long)night_start_hh_default * 10000 + (long)night_start_mm_default * 100;
 
 int   min_air_humidity_default  = 50;
 int   max_air_humidity_default  = 75;
@@ -184,6 +186,7 @@ float night_air_temp_default    = 14.0;
 
 int   min_soil_moisture_default = 25;
 int   max_soil_moisture_default = 75;
+float soil_temp_default         = 20.0;
 float day_soil_temp_default     = 25.0;
 float night_soil_temp_default   = 18.0;
 
@@ -191,28 +194,29 @@ float fan_run_min_default       = 5.0;
 float fan_off_min_default       = 10.0;
 int   resevoir_alert_default    = 20;
 
-int   sunny_day_set;
-float day_start_set;
-int   day_start_hh_set;
-int   day_start_mm_set;
-int   day_start_ss_set;
-float night_start_set;
-int   night_start_hh_set;
-int   night_start_mm_set;
-int   night_start_ss_set;
-int   min_air_humidity_set;
-int   max_air_humidity_set;
-float day_air_temp_set;
-float night_air_temp_set;
-int   min_soil_moisture_set;
-int   max_soil_moisture_set;
-float soil_temp_set;
-float night_soil_temp_set;
-float fan_run_min_set;
-float fan_off_min_set;
-int   resevoir_alert_set;
+int   sunny_day_set             = sunny_day_default;
+int   day_start_hh_set          = day_start_hh_default;
+int   day_start_mm_set          = day_start_mm_default;
+int   day_start_ss_set          = 00;
+long  day_start_set             = (long)day_start_hh_set * 10000 + (long)day_start_mm_set * 100;
+int   night_start_hh_set        = night_start_hh_default;
+int   night_start_mm_set        = night_start_mm_default;
+int   night_start_ss_set        = 00;
+long  night_start_set           = (long)night_start_hh_set * 10000 + (long)night_start_mm_set * 100;
+int   min_air_humidity_set      = min_air_humidity_default;
+int   max_air_humidity_set      = max_air_humidity_default;
+float day_air_temp_set          = day_air_temp_default;
+float night_air_temp_set        = night_air_temp_default;
+int   min_soil_moisture_set     = min_soil_moisture_default;
+int   max_soil_moisture_set     = max_soil_moisture_default;
+float soil_temp_set             = soil_temp_default;
+float day_soil_temp_set         = day_soil_temp_default;
+float night_soil_temp_set       = night_soil_temp_default;
+float fan_run_min_set           = fan_run_min_default;
+float fan_off_min_set           = fan_off_min_default;
+int   resevoir_alert_set        = resevoir_alert_default;
 
-int wait_delay = 4000;
+int   wait_delay = 4000;
 
 boolean time_synced = false;
 boolean time_synched = false; 
@@ -229,11 +233,33 @@ soil_humidity;
 
 void setup() {
   
+  //init_variables();
+  
   // setup serial debugging
   Serial.begin( 9600 );
   Serial.println("BioBox Serial Defined:\n");
-
-  pins_config();
+  delay( 500 );
+  Serial.println( "Setup" );
+  Serial.println();
+  Serial.println( "Day Start Default: " );
+  Serial.print( day_start_hh_default );
+  Serial.print( ":" );
+  Serial.println( day_start_mm_default );
+  Serial.println( "Day Start Set: " );
+  Serial.print( day_start_hh_set );
+  Serial.print( ":" );
+  Serial.println( day_start_mm_default );
+  Serial.println();
+  Serial.println( "Night Start Default: " );
+  Serial.print( night_start_hh_default );
+  Serial.print( ":" );
+  Serial.println( night_start_mm_default );
+  Serial.println( "Night Start Set: " );
+  Serial.print( night_start_hh_set );
+  Serial.print( ":" );
+  Serial.println( night_start_mm_default );
+  
+  init_config();
   
   Andee.begin();
   Andee.clear();
@@ -273,9 +299,24 @@ void loop() {
     time_synced = true;
     sprintf( time_string, "time: %d-%d-%d, %02d:%02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second() );
     Serial.println( time_string );
-  } else if ( (! Andee.isConnected() ) && time_synced ) {
+  } else if ( ! Andee.isConnected() ) {
     Serial.println( "iOS NOT Connected" );
-    time_synced = false;
+    /*
+    Serial.println( "Check for sensible Andee defaults" );
+    if ( lamp_bright_set == 0 ) lamp_bright_set = lamp_bright_default;
+    if ( sunny_day_set == 0 )   sunny_day_set   = sunny_day_default;
+    Serial.print( "Day Start Set - before: " );
+    Serial.println( day_start_set );
+    if ( day_start_set == 0 )   day_start_set   = (long)day_start_hh_default   * 10000 + day_start_mm_default   * 100;
+    Serial.print( "Day Start Set - after: " );
+    Serial.println( day_start_set );
+    Serial.println( day_start_hh_default   * 10000 + day_start_mm_default   * 100 );
+    if ( day_start_set == 0 )   night_start_set = (long)night_start_hh_default * 10000 + night_start_hh_default * 100;
+    */
+    if ( time_synced ) {
+      Serial.println( "indicate to check time - next iOS connection" );
+      time_synced = false;
+    }
   }
   
   // update lcd display

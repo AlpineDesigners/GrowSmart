@@ -15,7 +15,7 @@ void setInitialAndeeData() {
   lampBrigthSetting.setLocation(1,0,ONE_QUART);
   lampBrigthSetting.setTitle("Lamp Brightness");
   lampBrigthSetting.setSliderMinMax(0, 100, 0); // Display 2 decimal places
-  lampBrigthSetting.setSliderInitialValue( lamp_default ); 
+  lampBrigthSetting.setSliderInitialValue( lamp_bright_default ); 
   lampBrigthSetting.setSliderNumIntervals(100); // Set to 0 for continuous slider
   lampBrigthSetting.setSliderReportMode(ON_VALUE_CHANGE);
 
@@ -177,7 +177,7 @@ void andee_update() {
     dayStartSetting.setTitle( day_start_title );
     dayStartSetting.setDefaultTime(night_start_hh_default, night_start_mm_default, ss_default); // Format: hour, minute, secon
     //
-    lampBrigthSetting.moveSliderToValue( lamp_default );
+    lampBrigthSetting.moveSliderToValue( lamp_bright_default );
     minAirHumiditySetting.moveSliderToValue( min_air_humidity_default );
     maxAirHumiditySetting.moveSliderToValue( max_air_humidity_default );
     dayAirTempSetting.moveSliderToValue( day_air_temp_default );
@@ -229,7 +229,7 @@ void andee_update() {
   lamp_bright_set        = lampBrigthSetting.getSliderValue( INT );
   sunny_day_set          = sunnyDaySetting.getSliderValue( INT );
   day_start_set          = dayStartSetting.getSliderValue( FLOAT );
-  night_start_set        = nightStartSetting.getSliderValue( FLOAT );
+  night_start_set        = nightStartSetting.getSliderValue( FLOAT ); 
   min_air_humidity_set   = minAirHumiditySetting.getSliderValue( INT ); // Retrieve integer value
   max_air_humidity_set   = maxAirHumiditySetting.getSliderValue( INT ); // Retrieve float value
   day_air_temp_set       = dayAirTempSetting.getSliderValue( FLOAT );

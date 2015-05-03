@@ -16,7 +16,7 @@ void config_lcd() {
   // NOTE: Cursor Position: (CHAR, LINE) start at 0  
   lcd.clear();
   lcd.setCursor(5,0); //Start at character 8 on line 0
-  lcd.print("Smart Grow");
+  lcd.print("GrowSmart");
   lcd.setCursor(3,1);
   lcd.print("Class Edition");
   Serial.println("Wrote BioBox header");

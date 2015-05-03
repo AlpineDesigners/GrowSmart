@@ -1,4 +1,4 @@
-void pins_config() {
+void init_config() {
  
   // PIN USAGE
   // INPUT Probe Pins
