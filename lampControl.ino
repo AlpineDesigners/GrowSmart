@@ -30,10 +30,13 @@ boolean is_daytime() {
 
   // it is night if now it is before (less than) day start
   if ( now.hour() < day_start_hh_set ) return false;
-  Serial.println( "Now is not before day break" );
+  if ( ( now.hour() == day_start_hh_set ) && ( now.minute() <= night_start_mm_set ) ) return false;
+  Serial.println( "NOW is not before day start" );
+  
   // it is night if now is after (greater than) night start
   if ( now.hour() > night_start_hh_set ) return false; 
-  Serial.println( "Now is not after night start" ); 
+  if ( ( now.hour() ==  night_start_hh_set ) && ( now.minute() >= night_start_mm_set ) ) return false;
+  Serial.println( "NOW is not after night start" ); 
   /*
   if ( ( day_start_hh_set == now.hour() ) && ( day_start_mm_set > now.minute() ) ) return false;
   Serial.println( "Now is equal to Day Start Hour & GREATER than minutes" );

@@ -21,8 +21,13 @@
 //#define RELAY_ON              LOW;
 //#define RELAY_OFF             HIGH;
 
+// Live settings
+int RELAY_ON  = LOW;
+int RELAY_OFF = HIGH;
+/* Test Env
 int RELAY_ON  = HIGH;
 int RELAY_OFF = LOW;
+*/
 
 // PIN USAGE
 #define LIGHT_PROBE_PIN       A0
@@ -170,12 +175,12 @@ int   ss_default                = 0;
 int   lamp_bright_set           = 100;
 int   lamp_bright_default       = 100;
 int   sunny_day_default         = 95;
-int   day_start_hh_default      = 05;
-int   day_start_mm_default      = 15;
+int   day_start_hh_default      = 04;
+int   day_start_mm_default      = 45;
 int   day_start_ss_default      = 00;
 //long  day_start_default         = (long)day_start_hh_default * 10000 + (long)day_start_mm_default * 100;
-int   night_start_hh_default    = 21;
-int   night_start_mm_default    = 45;
+int   night_start_hh_default    = 23;
+int   night_start_mm_default    = 15;
 int   night_start_ss_default    = 00;
 //float  night_start_default       = (long)night_start_hh_default * 10000 + (long)night_start_mm_default * 100;
 
