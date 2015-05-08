@@ -52,23 +52,50 @@ boolean is_daytime() {
 
 void lamp_control() {
   int light_reading; 
-  light_reading = map( analogRead( LIGHT_PROBE_PIN ), 0, 1023, 0, 100); 
-
   if ( is_daytime() ) {
     Serial.println( "Daylight Hours" );
+    // lamp 0
+    light_reading = map( analogRead( LIGHT_PROBE_0_PIN ), 0, 1023, 0, 100); 
     // turn on lamp 5% early (to avoid a flicker at tranisition times)
     if ( light_reading < sunny_day_set - 5 ) {
-      Serial.println( "Dim ambient light - turn lamp *ON*" );
-      digitalWrite( LAMP_CTRL_PIN, RELAY_ON );
-      //analogWrite( LAMP_CTRL_PIN, lamp_gright_set );
+      Serial.print( "Dim ambient light -- " );
+      Serial.print( map( analogRead( LIGHT_PROBE_0_PIN ), 0, 1023, 0, 100) );
+      Serial.print( "% turn lamp 0 *ON* -- " );
+      Serial.print( RELAY_ON );
+      Serial.print( " pin " );
+      Serial.println( LAMP_0_CTRL_PIN );
+      digitalWrite( LAMP_0_CTRL_PIN, RELAY_ON );
+      //analogWrite( LAMP_0_CTRL_PIN, lamp_gright_set );
     // if it brighter than the low light condition -- turn OFF the lamp
     } else if ( light_reading > sunny_day_set ) {
-      Serial.println( "Bright sunny day - turn lamp *OFF*" );
-      digitalWrite( LAMP_CTRL_PIN, RELAY_OFF );
+      Serial.print( "Bright sunny day - " );
+      Serial.print( map( analogRead( LIGHT_PROBE_0_PIN ), 0, 1023, 0, 100) );
+      Serial.print( "% turn lamp 0 *OFF* -- " );
+      Serial.print( RELAY_OFF );
+      Serial.print( " pin " );
+      Serial.println( LAMP_0_CTRL_PIN );
+      digitalWrite( LAMP_0_CTRL_PIN, RELAY_OFF );
+    }
+    // lamp 1
+    light_reading = map( analogRead( LIGHT_PROBE_1_PIN ), 0, 1023, 0, 100); 
+    // turn on lamp 5% early (to avoid a flicker at tranisition times)
+    if ( light_reading < sunny_day_set - 5 ) {
+      Serial.println( "Dim ambient light - turn lamp 1 *ON*" );
+      digitalWrite( LAMP_1_CTRL_PIN, RELAY_ON );
+      //analogWrite( LAMP_1_CTRL_PIN, lamp_gright_set );
+    // if it brighter than the low light condition -- turn OFF the lamp
+    } else if ( light_reading > sunny_day_set ) {
+      Serial.println( "Bright sunny day - turn lamp 1 *OFF*" );
+      digitalWrite( LAMP_1_CTRL_PIN, RELAY_OFF );
     }
   } else {
     Serial.println( "Its night -- turn lamp *OFF*" );
-    digitalWrite( LAMP_CTRL_PIN, RELAY_OFF );
+    digitalWrite( LAMP_0_CTRL_PIN, RELAY_OFF );
+    Serial.print( RELAY_OFF );
+    Serial.print( " pin " );
+    Serial.println( LAMP_0_CTRL_PIN );
+    //
+    digitalWrite( LAMP_1_CTRL_PIN, RELAY_OFF );
   }
   Serial.println();
 }

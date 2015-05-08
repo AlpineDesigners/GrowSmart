@@ -26,5 +26,11 @@ void init_config() {
   pinMode( 11 , OUTPUT );
   pinMode( 12 , OUTPUT );
   pinMode( 13 , OUTPUT ); 
+
+  pinMode( 22 , OUTPUT );   // LAMP 0
+  pinMode( 23 , OUTPUT );   // LAMP 1
+  
+  pinMode( 24 , OUTPUT );   // PUMP 0
+  pinMode( 25 , OUTPUT );   // PUMP 1
   
 }

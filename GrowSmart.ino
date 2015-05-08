@@ -30,27 +30,29 @@ int RELAY_OFF = LOW;
 */
 
 // PIN USAGE
-#define LIGHT_PROBE_PIN       A0
+//#define PIN_A0                A0
 #define INNER_AIR_PROBE_PIN   A1  // lab temp and humidity probe pin
 #define OUTER_AIR_PROBE_PIN   A2  // outside temp (and humidity with DHT22 probe )
 //#define SOIL_PROBE_PIN        A3  // humidity & temp with ??? probe)
 //#define SOIL_MOIST_PROBE_PIN  A3  // humidity or (temp and humidity with DHT22 probe)
 //#define SOIL_TEMP_PROBE_PIN   A4  // temp soil probe with 10K thermistor
 #define PROXIMITY_PROBE_PIN   A5  // know when to make displays visible when a person is nearby
+
 #define AQUA_STOP_PROBE_0_PIN A6
-//#define AQUA_STOP_PROBE_1_PIN A7
+#define AQUA_STOP_PROBE_1_PIN A7
 #define PIN_A8                A8
-#define PIN_A9                A9
-#define PIN_A10               A10
-#define PIN_A11               A11
-#define PIN_A12               A12
+#define WATER_TEMP_0_PIN      A9
+#define WATER_TEMP_1_PIN      A10
+
+#define LIGHT_PROBE_0_PIN     A11
+#define LIGHT_PROBE_1_PIN     A12
 #define PIN_A13               A13
-#define WATER_TEMP_PIN        A14
+#define PIN_A14               A14
 #define AMPERAGE_PROBE_PIN    A15  // current usage probe
 
 // shield reserved pins -- DO NOT CHANGE USAGE
-#define SERIAL_RX_PIN         0  // reserved by Serial
-#define SERIAL_TX_PIN         1  // reserved by Serial
+#define SERIAL_RX_0_PIN       0  // reserved by Serial
+#define SERIAL_TX_0_PIN       1  // reserved by Serial
 #define INTERRUPT_0           2  // PWM & Interrupt 0
 #define INTERRUPT_1           3  // PWM & Interrupt 1
 /*
@@ -63,8 +65,11 @@ int RELAY_OFF = LOW;
 // ClimeCase output pins
 #define AIR_TEMP_CTRL_PIN     9  // PWM - for air heating intensity control
 #define SOIL_TEMP_CTRL_PIN   10  // PWM - for soil heating intensity control
-#define LAMP_CTRL_PIN        11  // PWM - for lamp brigthness control
-#define HUMIDIFIER_CTRL_PIN  12  // PWM - humidifier on/off control pin
+
+//#define LAMP_0_CTRL_PIN      11  
+//#define LAMP_1_CTRL_PIN      12
+//#define PIN_11               11  // PWM - for lamp brigthness control
+//#define HUMIDIFIER_CTRL_PIN  12  // PWM - humidifier on/off control pin
 #define WINDOW_CTRL_PIN      13  // PWM - for winow servo control
 // reserved usage pins
 #define PIN_14               14  // TX
@@ -76,36 +81,42 @@ int RELAY_OFF = LOW;
 
 #define I2C_TWI_SDA_PIN      20  // SDA & interrupt 3
 #define I2C_TWI_SCL_PIN      21  // SCL & interrupt 2
-#define AQUA_PUMP_CTRL_PIN   22  
-//#define LAMP_CTRL_PIN_0      23  
-#define PIN_24               24  
-#define PIN_25               25
-#define PIN_26               26
+
+#define LAMP_0_CTRL_PIN      22  
+#define LAMP_1_CTRL_PIN      23
+
+#define AQUA_PUMP_CTRL_PIN   24  
+#define AQUA_PUMP_0_CTRL_PIN 24  
+#define AQUA_PUMP_1_CTRL_PIN 25  
 #define PIN_27               27
+
 #define PIN_28               28
 #define PIN_29               29
-
 #define PIN_30               30
 #define PIN_31               31
-#define PIN_32               32  
-#define PIN_33               33  
+#define PIN_32               32
+
+#define PIN_33               33
 #define PIN_34               34  
 #define PIN_35               35
 #define PIN_36               36
+
 #define PIN_37               37
 #define PIN_38               38
 #define PIN_39               39
-
 #define PIN_40               40
+
 #define PIN_41               41  // PWM
 #define PIN_42               42  // PWM
 #define PIN_43               43  // PWM
 #define PIN_44               44  // PWM
 #define PIN_45               45
+
 #define PIN_46               46
 #define PIN_47               47
 #define PIN_48               48
 #define PIN_49               49
+
 #define SPI_MISO_50          50  // SPI: 50 (MISO), 51 (MOSI), 52 (SCK), 53 (SS)
 #define SPI_MOSI_51          51  // SPI: 50 (MISO), 51 (MOSI), 52 (SCK), 53 (SS)
 #define SPI_SCK_52           52  // SPI: 50 (MISO), 51 (MOSI), 52 (SCK), 53 (SS)
@@ -180,7 +191,7 @@ int   day_start_mm_default      = 45;
 int   day_start_ss_default      = 00;
 //long  day_start_default         = (long)day_start_hh_default * 10000 + (long)day_start_mm_default * 100;
 int   night_start_hh_default    = 23;
-int   night_start_mm_default    = 15;
+int   night_start_mm_default    = 45;
 int   night_start_ss_default    = 00;
 //float  night_start_default       = (long)night_start_hh_default * 10000 + (long)night_start_mm_default * 100;
 
@@ -195,8 +206,10 @@ float soil_temp_default         = 20.0;
 float day_soil_temp_default     = 25.0;
 float night_soil_temp_default   = 18.0;
 
-float fan_run_min_default       = 5.0;
-float fan_off_min_default       = 10.0;
+// run for 4 mins & 30 seconds
+float fan_run_min_default       = 4.5;
+// off for 15 mins & 30 seconds
+float fan_off_min_default       = 15.5;
 int   resevoir_alert_default    = 20;
 
 int   sunny_day_set             = sunny_day_default;
@@ -294,35 +307,9 @@ void setup() {
 // Arduino will run instructions here repeatedly until you power it off.
 void loop() {
   // do on first loop 
-  DateTime   now = RTC.now();
   Serial.println( "start loop" );
   // do Andee processing if connected
-  if  ( Andee.isConnected() ) {
-    Serial.println( "iOS connected -- process Andee" );
-    andee_update();
-    if ( ( !time_synced) )  check_time();
-    time_synced = true;
-    sprintf( time_string, "time: %d-%d-%d, %02d:%02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second() );
-    Serial.println( time_string );
-  } else if ( ! Andee.isConnected() ) {
-    Serial.println( "iOS NOT Connected" );
-    /*
-    Serial.println( "Check for sensible Andee defaults" );
-    if ( lamp_bright_set == 0 ) lamp_bright_set = lamp_bright_default;
-    if ( sunny_day_set == 0 )   sunny_day_set   = sunny_day_default;
-    Serial.print( "Day Start Set - before: " );
-    Serial.println( day_start_set );
-    if ( day_start_set == 0 )   day_start_set   = (long)day_start_hh_default   * 10000 + day_start_mm_default   * 100;
-    Serial.print( "Day Start Set - after: " );
-    Serial.println( day_start_set );
-    Serial.println( day_start_hh_default   * 10000 + day_start_mm_default   * 100 );
-    if ( day_start_set == 0 )   night_start_set = (long)night_start_hh_default * 10000 + night_start_hh_default * 100;
-    */
-    if ( time_synced ) {
-      Serial.println( "indicate to check time - next iOS connection" );
-      time_synced = false;
-    }
-  }
+  andee();
   
   // update lcd display
   lcd_display();

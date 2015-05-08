@@ -1,3 +1,22 @@
+void andee() {
+  DateTime   now = RTC.now();
+  if  ( Andee.isConnected() ) {
+    Serial.println( "iOS connected -- process Andee" );
+    andee_update();
+    if ( ( !time_synced) )  check_time();
+    time_synced = true;
+    sprintf( time_string, "time: %d-%d-%d, %02d:%02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second() );
+    Serial.println( time_string );
+  } else if ( ! Andee.isConnected() ) {
+    Serial.println( "iOS NOT Connected" );
+    if ( time_synced ) {
+      Serial.println( "indicate to check time - next iOS connection" );
+      time_synced = false;
+    }
+  }  
+}
+
+
 // This is the function meant to define the types and the apperance of
 // all the objects on your smartphone
 void setInitialAndeeData() {  
@@ -259,22 +278,5 @@ void andee_update() {
   resevoirAlertSetting.update();
   buttonResetPosition.update();
 
-  /*
-  if ( (!time_synced) ) {
-    Serial.println( "first iOS Connection" );
-   // Retrieve date and store in variables: day, month, and year
-    Andee.getDeviceDate(&day, &month, &year);
-    // Retrieve time and store in variables: hour, minute, second
-    Andee.getDeviceTime(&hour, &minute, &second);
-    sprintf(time_string, "%d-%d-%d, %02d:%02d:%02d", year, month, day, hour, minute, second);
-    DateTime ios_time ( year, month, day, hour, minute, second );
-    // set clock time (first time)?
-    //RTC.adjust(DateTime(__DATE__, __TIME__));
-    Serial.println( "RTC Time updated" );
-    //RTC.adjust( DateTime( year, month, day, hour, minute, second ) );
-    RTC.adjust( DateTime( ios_year, ios_month, ios_day, ios_hour, ios_minute, ios_second ) );
-
-  }
-  */
 }     // END of ANDEE UPDATE
 

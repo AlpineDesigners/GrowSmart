@@ -31,6 +31,8 @@ void config_lcd() {
 
 void lcd_display() {
   static   char print_str[20];
+  static   char print_str_1[20];
+  static   char print_str_2[20];
   static   unsigned long interval = 10000;
   static   unsigned long previousMillis;        // will store last time LED was updated
   unsigned long currentMillis = millis();
@@ -48,27 +50,30 @@ void lcd_display() {
   DateTime now = RTC.now();
   lcd.setCursor(5,0); //Start at character 8 on line 0
   lcd.print( project_title );
-  lcd.setCursor(2, 1);
-  //lcd.print("Class Edition");
-  lcd.print( "Brightness: " );
-  lcd.print( map( analogRead( LIGHT_PROBE_PIN ), 0, 1023, 0, 99) );
-  lcd.print( " %");
-  lcd.setCursor(0,2);
+  lcd.setCursor(1, 1);
+  lcd.print( "Sun 1=" );
+  sprintf( print_str_1, "%02d", map( analogRead( LIGHT_PROBE_0_PIN ), 0, 1023, 0, 99) );
+  lcd.print( print_str_1 );  
+  lcd.print( "% & 2=" );
+  sprintf( print_str_2, "%02d", map( analogRead( LIGHT_PROBE_1_PIN ), 0, 1023, 0, 99) );
+  lcd.print( print_str_2 );
+  lcd.print( "%" );
+  lcd.setCursor(1,2);
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   lcd.write("In  T=");
   lcd.print( inner_dht.readTemperature(),1 );
   lcd.write("c H=");
-  lcd.print( inner_dht.readHumidity(),1 );
+  lcd.print( inner_dht.readHumidity(),0 );
   lcd.write("%");
   //sprintf( print_str, "In  T=02%fc H=02%f\%", now.year(), now.month(), now.day(), now.hour(), now.minute() );
-  lcd.setCursor(0,3);
+  lcd.setCursor(1,3);
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   lcd.write("Out T=");
   lcd.print( outer_dht.readTemperature(),1 );
   lcd.write("c H=");
-  lcd.print( outer_dht.readHumidity(),1 );
+  lcd.print( outer_dht.readHumidity(),0 );
   lcd.write("%");
   //sprintf( time_string, "%04d-%02d-%02d %02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute() );
   //lcd.print( time_string );
