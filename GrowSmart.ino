@@ -31,16 +31,19 @@ int RELAY_OFF = LOW;
 
 // PIN USAGE
 //#define PIN_A0                A0
-#define INNER_AIR_PROBE_PIN   A1  // lab temp and humidity probe pin
-#define OUTER_AIR_PROBE_PIN   A2  // outside temp (and humidity with DHT22 probe )
+//#define INNER_AIR_PROBE_PIN   A1  // lab temp and humidity probe pin
+//#define OUTER_AIR_PROBE_PIN   A2  // outside temp (and humidity with DHT22 probe )
 //#define SOIL_PROBE_PIN        A3  // humidity & temp with ??? probe)
 //#define SOIL_MOIST_PROBE_PIN  A3  // humidity or (temp and humidity with DHT22 probe)
 //#define SOIL_TEMP_PROBE_PIN   A4  // temp soil probe with 10K thermistor
-#define PROXIMITY_PROBE_PIN   A5  // know when to make displays visible when a person is nearby
+//#define PROXIMITY_PROBE_PIN   A5  // know when to make displays visible when a person is nearby
 
-#define AQUA_STOP_PROBE_0_PIN A6
-#define AQUA_STOP_PROBE_1_PIN A7
-#define PIN_A8                A8
+#define INNER_AIR_PROBE_PIN   A6  // lab temp and humidity probe pin
+#define OUTER_AIR_PROBE_PIN   A7  // outside temp (and humidity with DHT22 probe )
+#define PROXIMITY_PROBE_PIN   A8  // know when to make displays visible when a person is nearby
+//#define AQUA_STOP_PROBE_0_PIN A6
+//#define AQUA_STOP_PROBE_1_PIN A7
+//#define PIN_A8                A8
 #define WATER_TEMP_0_PIN      A9
 #define WATER_TEMP_1_PIN      A10
 
